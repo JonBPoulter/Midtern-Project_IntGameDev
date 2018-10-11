@@ -18,7 +18,7 @@ public class PicsTaken : MonoBehaviour
 	void Update () {
 
 		//When Two Pics have been taken Camera in 360 scenes are stagnant 
-		if (PicTaken >= 3)
+		/*if (PicTaken >= 3)
 		{
 			if(Input.GetMouseButtonDown(0) && CurrentScene==1)
 			{
@@ -31,7 +31,7 @@ public class PicsTaken : MonoBehaviour
 				CurrentScene = 1;
 			}
 			
-		}
+		}*/
 		
 	}
 }

@@ -9,6 +9,7 @@
       <e p="Assets" t="Include">
         <e p="Scripts" t="Include">
           <e p="ChangeScene.cs" t="Include" />
+          <e p="Manageer.cs" t="Include" />
           <e p="PicsTaken.cs" t="Include" />
           <e p="PlayerMove.cs" t="Include" />
           <e p="RotateCam.cs" t="Include" />

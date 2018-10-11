@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class RotateCam : MonoBehaviour
 {
-
+/*
 	//public float Camy;
 	//public float Camx;
 	//public GameObject Cube1;
@@ -39,7 +39,7 @@ public class RotateCam : MonoBehaviour
 		}
 
 		//Change Scene back to First Scene on mouse click 
-		if (Input.GetMouseButtonDown(0))
+		//if (Input.GetMouseButtonDown(0))
 		{
 		/*	if (PicsTaken.CurrentScene == 2)
 			{
@@ -49,7 +49,7 @@ public class RotateCam : MonoBehaviour
 			if (PicsTaken.CurrentScene == 3)
 			{
 				Cube2.transform.Rotate(Camx, Camy, 0f);
-			}*/
+			}
 			
 			ChangeScene.SceneNum = 1;
 			PicsTaken.PicTaken =PicsTaken.PicTaken+1;
@@ -59,5 +59,5 @@ public class RotateCam : MonoBehaviour
 			
 		}
 		
-	}
+	}*/
 }

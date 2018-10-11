@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CamPT1
   - CamPT2
+  - PicturePoint
   layers:
   - Default
   - TransparentFX
