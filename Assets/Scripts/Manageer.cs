@@ -5,7 +5,7 @@ using UnityEngine;
 public class Manageer : MonoBehaviour
 {
 
-	public int SceneNum;
+	public static int SceneNum;
 	private Vector3 InputVector;
 	public Material Skybox1;
 	public Material Skybox2;
@@ -19,10 +19,18 @@ public class Manageer : MonoBehaviour
 	private IEnumerator ForeGroundAppear;
 	public int PicturesTaken;
 	public GameObject[] PicturePoints;
+	//public Camera PrefabCam1;
+	//public Camera PrefabCam2;
+	public GameObject Cam1;
+	public GameObject Cam2;
+	private int EndGameCam=1;
+	
+
 
 	// Use this for initialization
 	void Start ()
 	{
+		RenderSettings.skybox = Skybox3;
 		ForeGroundAppear = Appear();
 		ForeGroundFade1 = Fading1();
 		ForeGroundFade2 = Fading2();
@@ -31,6 +39,8 @@ public class Manageer : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
+		
+		
 		
 		if (SceneNum == 0)
 		{
@@ -52,7 +62,7 @@ public class Manageer : MonoBehaviour
 		}
 		//Scene Switches to one stop all Coroutines 
 		
-		else if(SceneNum==2 || SceneNum==3)
+		 if(SceneNum==2)
 		{
 			
 			float mouseX = Input.GetAxis("Mouse X");
@@ -62,14 +72,63 @@ public class Manageer : MonoBehaviour
 			
 			if (Input.GetMouseButtonDown(0))
 			{
-				
+				Instantiate(Cam1, MainCamera.transform.position, MainCamera.transform.rotation);
+			
 				PicturesTaken = PicturesTaken + 1;
 				StartCoroutine(ForeGroundAppear);
 				Debug.Log("Stop");
+				Debug.Log(PicturesTaken);
 				
 			}
 		}
-		
+		if (SceneNum==3)
+		{
+			
+			float mouseX = Input.GetAxis("Mouse X");
+			float mouseY = Input.GetAxis("Mouse Y");
+			transform.Rotate(0f, mouseX, 0f);
+			Camera.main.transform.Rotate(-mouseY, 0f, 0f);
+			
+			if (Input.GetMouseButtonDown(0))
+			{
+				Instantiate(Cam2, MainCamera.transform.position, MainCamera.transform.rotation);
+			
+				PicturesTaken = PicturesTaken + 1;
+				StartCoroutine(ForeGroundAppear);
+				Debug.Log("Stop");
+				Debug.Log(PicturesTaken);
+				
+			}
+		}
+		else if (PicturesTaken == 2)
+			
+		{
+			SceneNum = 5;
+			
+			MainCamera.farClipPlane = .5f;
+			if (EndGameCam==1)
+			{
+				MainCamera.transform.position = Cam1.transform.position;
+				RenderSettings.skybox = Skybox1;
+				if (Input.GetMouseButtonDown(0))
+				{
+					EndGameCam = 2;
+					Debug.Log("Switch");
+				}
+			}
+			else if(EndGameCam==2)
+			{
+				MainCamera.transform.position = Cam2.transform.position;
+				RenderSettings.skybox = Skybox2;
+				if (Input.GetMouseButtonDown(0))
+				{
+					EndGameCam = 1;
+				}
+			}
+			
+			
+			
+		}
 		
 	}
 	void FixedUpdate()
@@ -212,7 +271,7 @@ public class Manageer : MonoBehaviour
 			
 			yield return  new WaitForSeconds(.15f);
 
-			MainCamera.farClipPlane = 2000f;
+			MainCamera.farClipPlane = 4500f;
 			SceneNum = 0;
 			Debug.Log("PlaneAppear");
 			yield return null;
@@ -220,6 +279,39 @@ public class Manageer : MonoBehaviour
 
 		}
 	}
-	
+
+	/*void PicturesDone()
+	{
+		if (PicturesTaken == 2)
+			
+		{
+			SceneNum = 5;
+			EndGameCam = 1;
+			MainCamera.enabled = false;
+			if (EndGameCam==1)
+			{
+				PrefabCam1.enabled = true;
+				PrefabCam2.enabled = false;
+				RenderSettings.skybox = Skybox1;
+				if (Input.GetMouseButtonDown(0))
+				{
+					EndGameCam = 2;
+				}
+			}
+			else if(EndGameCam==2)
+			{
+				PrefabCam1.enabled = false;
+				PrefabCam2.enabled = true;
+				RenderSettings.skybox = Skybox2;
+				if (Input.GetMouseButtonDown(0))
+				{
+					EndGameCam = 2;
+				}
+			}
+			
+			
+			
+		}
+	}*/
 	
 }

@@ -7,6 +7,7 @@ TagManager:
   - CamPT1
   - CamPT2
   - PicturePoint
+  - BeachCube
   layers:
   - Default
   - TransparentFX
