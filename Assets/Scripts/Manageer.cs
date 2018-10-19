@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Manageer : MonoBehaviour
 {
@@ -17,24 +18,38 @@ public class Manageer : MonoBehaviour
 	private IEnumerator ForeGroundFade1; 
 	private IEnumerator ForeGroundFade2; 
 	private IEnumerator ForeGroundAppear;
-	public int PicturesTaken;
+	public static int PicturesTaken;
+	public GameObject CamTargetPos;
 	public GameObject[] PicturePoints;
 	//public Camera PrefabCam1;
 	//public Camera PrefabCam2;
 	public GameObject Cam1;
 	public GameObject Cam2;
+	private float Cam1FOV;
+	private float Cam2FOV;
 	private int EndGameCam=1;
+	public RawImage CameraUI;
+	public GameObject PicCam;
+	//public ParticleSystem CamPart1;
+	//public ParticleSystem CamPart2;
+
 	
 
 
 	// Use this for initialization
 	void Start ()
 	{
+		/*var emission1 = CamPart1.emission;
+		var emission2 = CamPart2.emission;
+		emission1.enabled = true;
+		emission2.enabled = true;*/
+		
 		RenderSettings.skybox = Skybox3;
 		ForeGroundAppear = Appear();
 		ForeGroundFade1 = Fading1();
 		ForeGroundFade2 = Fading2();
 		PicturesTaken = 0;
+		CameraUI.enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -44,9 +59,10 @@ public class Manageer : MonoBehaviour
 		
 		if (SceneNum == 0)
 		{
+			CameraUI.enabled = false;
 			float mouseX = Input.GetAxis("Mouse X");
 			float mouseY = Input.GetAxis("Mouse Y");
-
+			MoveSpeed = 200f;
 			//Rotate player and camera perspective on mouse movement 
 			transform.Rotate(0f, mouseX, 0f);
 			Camera.main.transform.Rotate(-mouseY, 0f, 0f);
@@ -64,7 +80,7 @@ public class Manageer : MonoBehaviour
 		
 		 if(SceneNum==2)
 		{
-			
+			//CameraUI.enabled =true;
 			float mouseX = Input.GetAxis("Mouse X");
 			float mouseY = Input.GetAxis("Mouse Y");
 			transform.Rotate(0f, mouseX, 0f);
@@ -73,7 +89,7 @@ public class Manageer : MonoBehaviour
 			if (Input.GetMouseButtonDown(0))
 			{
 				Instantiate(Cam1, MainCamera.transform.position, MainCamera.transform.rotation);
-			
+				Cam1FOV = MainCamera.fieldOfView;
 				PicturesTaken = PicturesTaken + 1;
 				StartCoroutine(ForeGroundAppear);
 				Debug.Log("Stop");
@@ -83,7 +99,7 @@ public class Manageer : MonoBehaviour
 		}
 		if (SceneNum==3)
 		{
-			
+			//CameraUI.enabled =true;
 			float mouseX = Input.GetAxis("Mouse X");
 			float mouseY = Input.GetAxis("Mouse Y");
 			transform.Rotate(0f, mouseX, 0f);
@@ -92,7 +108,7 @@ public class Manageer : MonoBehaviour
 			if (Input.GetMouseButtonDown(0))
 			{
 				Instantiate(Cam2, MainCamera.transform.position, MainCamera.transform.rotation);
-			
+				Cam2FOV = MainCamera.fieldOfView;
 				PicturesTaken = PicturesTaken + 1;
 				StartCoroutine(ForeGroundAppear);
 				Debug.Log("Stop");
@@ -104,12 +120,15 @@ public class Manageer : MonoBehaviour
 			
 		{
 			SceneNum = 5;
+			Destroy(PicCam);
 			
 			MainCamera.farClipPlane = .5f;
 			if (EndGameCam==1)
 			{
-				MainCamera.transform.position = Cam1.transform.position;
 				RenderSettings.skybox = Skybox1;
+				MainCamera.transform.position = Cam1.transform.position;
+				MainCamera.fieldOfView = Cam1FOV;
+				
 				if (Input.GetMouseButtonDown(0))
 				{
 					EndGameCam = 2;
@@ -118,8 +137,10 @@ public class Manageer : MonoBehaviour
 			}
 			else if(EndGameCam==2)
 			{
-				MainCamera.transform.position = Cam2.transform.position;
 				RenderSettings.skybox = Skybox2;
+				MainCamera.transform.position = Cam2.transform.position;
+				MainCamera.fieldOfView = Cam2FOV;
+				
 				if (Input.GetMouseButtonDown(0))
 				{
 					EndGameCam = 1;
@@ -148,6 +169,7 @@ public class Manageer : MonoBehaviour
 					Debug.Log("First360");
 					//Playerpos = Player.transform.position;
 					SceneNum = 2;
+				MoveSpeed = 0f;
 				StartCoroutine(ForeGroundFade1);
 				//RenderSettings.skybox= Skybox1;
 				//Destroy(CamPT1);
@@ -163,6 +185,7 @@ public class Manageer : MonoBehaviour
 					Debug.Log("Second360");
 					//Playerpos = Player.transform.position;
 					SceneNum = 3;
+				MoveSpeed = 0f;
 				StartCoroutine(ForeGroundFade2);
 				//RenderSettings.skybox= Skybox1;
 				//Destroy(CamPT2);
@@ -180,11 +203,12 @@ public class Manageer : MonoBehaviour
 
 		
 			MainCamera.farClipPlane = 900f;
+		MainCamera.fieldOfView = 50f;
 
 			yield return new WaitForSeconds(.1f);
 
 			MainCamera.farClipPlane = 650f;
-
+		MainCamera.fieldOfView = 30f;
 			yield return new WaitForSeconds(.1f);
 
 			MainCamera.farClipPlane = 400f;
@@ -194,12 +218,13 @@ public class Manageer : MonoBehaviour
 			RenderSettings.skybox = Skybox1;
 
 			MainCamera.farClipPlane = 150f;
-
+		MainCamera.fieldOfView = 60f;
 			yield return new WaitForSeconds(.1f);
 
 			MainCamera.farClipPlane = 50f;
 
 			yield return new WaitForSeconds(.1f);
+		CameraUI.enabled = true;
 
 			MainCamera.farClipPlane = 0.5f;
 			Debug.Log("CamPoint1");
@@ -211,11 +236,11 @@ public class Manageer : MonoBehaviour
 	private IEnumerator Fading2(){
 			
 				MainCamera.farClipPlane = 900f;
-
+		MainCamera.fieldOfView = 50f;
 				yield return new WaitForSeconds(.1f);
 
 				MainCamera.farClipPlane = 650f;
-
+		MainCamera.fieldOfView = 30f;
 				yield return new WaitForSeconds(.1f);
 
 				MainCamera.farClipPlane = 400f;
@@ -225,12 +250,13 @@ public class Manageer : MonoBehaviour
 				RenderSettings.skybox = Skybox2;
 				
 				MainCamera.farClipPlane = 150f;
-
+		MainCamera.fieldOfView = 60f;
 				yield return new WaitForSeconds(.1f);
 
 				MainCamera.farClipPlane = 50f;
 
 				yield return new WaitForSeconds(.1f);
+		CameraUI.enabled = true;
 
 				MainCamera.farClipPlane = 0.5f;
 				Debug.Log("CamPoint2");
@@ -252,7 +278,7 @@ public class Manageer : MonoBehaviour
 			MainCamera.farClipPlane = 50f;
 
 			yield return new WaitForSeconds(.1f);
-
+			CameraUI.enabled = false;
 			MainCamera.farClipPlane = 150f;
 
 			yield return new WaitForSeconds(.2f);
@@ -269,9 +295,10 @@ public class Manageer : MonoBehaviour
 
 			MainCamera.farClipPlane = 900f;
 			
+			
 			yield return  new WaitForSeconds(.15f);
 
-			MainCamera.farClipPlane = 4500f;
+			MainCamera.farClipPlane = 5500f;
 			SceneNum = 0;
 			Debug.Log("PlaneAppear");
 			yield return null;
